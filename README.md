@@ -1,6 +1,9 @@
 # About Me
-<h1 align="center">Hi, I'm Swapnil Nandi Utsha 👋</h1>
-
+<h1 align="center">
+  <span style="background: linear-gradient(90deg, #00F7FF, #7B61FF, #FF4ECD); -webkit-background-clip: text; color: transparent;">
+    Swapnil Nandi Utsha
+  </span>
+</h1>
 <p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=650&lines=Software+Developer;Flutter+%7C+FastAPI+%7C+PostgreSQL;Building+Production-Ready+Products" />
 </p>
