@@ -1,4 +1,3 @@
-#  About Me:
 # About Me
 
 I'm Swapnil Nandi Utsha, a Computer Science student and software developer building practical, production ready applications.
