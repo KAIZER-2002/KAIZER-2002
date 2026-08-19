@@ -1,6 +1,9 @@
 #  About Me:
-I’m Swapnil Nandi, a Computer Science student and software developer focused on building practical, production ready applications. I enjoy working across Flutter, backend systems, databases and modern developer tools, with a strong interest in turning ideas into real products.
+# About Me
 
+I'm Swapnil Nandi Utsha, a Computer Science student and software developer building practical, production ready applications.
+
+My current focus is Flutter, Python, FastAPI, PostgreSQL and scalable software architecture with a strong interest in turning ideas into real products.
 
 ## 🌐 Socials:
 [![Discord](https://img.shields.io/badge/Discord-%237289DA.svg?logo=discord&logoColor=white)](https://discord.gg/chcotaco7189) [![Facebook](https://img.shields.io/badge/Facebook-%231877F2.svg?logo=Facebook&logoColor=white)](https://facebook.com/utsha.swapnil) [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/kaizer_san_) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/swapnil-nandi-utsha) [![Pinterest](https://img.shields.io/badge/Pinterest-%23E60023.svg?logo=Pinterest&logoColor=white)](https://pinterest.com/swapnilnandiutsha) [![Stack Overflow](https://img.shields.io/badge/-Stackoverflow-FE7A16?logo=stack-overflow&logoColor=white)](https://stackoverflow.com/users/33047687) [![Codepen](https://img.shields.io/badge/Codepen-000000?logo=codepen&logoColor=white)](https://codepen.io/Swapnil-Nandi) [![Mastodon](https://img.shields.io/badge/-MASTODON-%232B90D9?logo=mastodon&logoColor=white)](https://mastodon.social/@swapnilnandi) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:swapnilnandiutsha@gmail.com) 
