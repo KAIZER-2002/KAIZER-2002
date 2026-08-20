@@ -54,7 +54,8 @@ A location-based rental marketplace concept for discovering and listing rooms.
 ![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=tokyonight)
 
 <p align="center">
-  <img src="./assets/Koyomi Araragi.gif"
-       width="540"
-       alt="Animated profile banner">
+  <img
+    src="https://raw.githubusercontent.com/KAIZER-2002/KAIZER-2002/main/assets/Koyomi%20Araragi.gif"
+    width="540"
+    alt="Animated profile banner">
 </p>
