@@ -7,14 +7,7 @@
 </p>
 
 <p align="center">
-  Computer Science Student · Software Developer · Product Builder
-</p>
-<p align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=24&pause=1000&color=36BCF7&center=true&vCenter=true&width=650&lines=Software+Developer;Flutter+%7C+FastAPI+%7C+PostgreSQL;Building+Production-Ready+Products" />
-</p>
-
-<p align="center">
-  Computer Science Student · Software Developer · Product Builder
 </p>
 
 <p align="center">
@@ -48,6 +41,15 @@ A location-based rental marketplace concept for discovering and listing rooms.
 ![](https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true)<br/>
 ![](https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false)<br/>
 ![](https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
+
+## 📊 Contributions
+
+<p align="center">
+  <img
+    src="./profile-3d-contrib/profile-night-green.svg"
+    width="100%"
+    alt="3D GitHub contribution graph">
+</p>
 
 ### Random Dev Quote
 
