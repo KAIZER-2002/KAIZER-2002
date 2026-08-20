@@ -3,7 +3,7 @@
 <h1 align="center">Swapnil Nandi Utsha</h1>
 
 <p align="center">
-  <img src="./assets/animation.gif" width="350" alt="Animated developer illustration">
+  <img src="./assets/evangelion.gif" width="350" alt="Animated developer illustration">
 </p>
 
 <p align="center">
