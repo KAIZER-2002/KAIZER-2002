@@ -2,7 +2,9 @@
   <img src="./assets/Programmer1.gif" width="100%" alt="Developer coding animation">
 </p>
 
-<h1 align="center">Swapnil Nandi Utsha</h1>
+<p align="center">
+  <img src="./assets/name.svg" width="600" alt="Swapnil Nandi Utsha">
+</p>
 
 <p align="center">
   <b>SOFTWARE DEVELOPER</b><br>
@@ -49,66 +51,54 @@
 
 ---
 
-## 📊 GitHub Analytics
+<h2 align="center">
+  <img src="./assets/catkitty.gif" width="45">
+  <img src="./assets/catkitty.gif" width="65">
+  &nbsp; 📊 GitHub Analytics &nbsp;
+  <img src="./assets/catkitty.gif" width="65">
+  <img src="./assets/catkitty.gif" width="45">
+</h2>
 
-<p align="center">
-  <img src="./assets/catkitty.gif" width="70" alt="cat kitty float left">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="./assets/catkitty.gif" width="70" alt="cat kitty float right">
-</p>
+<div align="center">
+  <img src="./assets/evangelion.gif" width="160" align="right" alt="Evangelion">
+  <img src="https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats"><br>
+  <img src="https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false" alt="Streak Stats"><br>
+  <img src="https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
+</div>
 
-<table>
-  <tr>
-    <td width="60%" align="center">
-      <img src="https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats">
-      <br><br>
-      <img src="https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false" alt="Streak Stats">
-      <br><br>
-      <img src="https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
-    </td>
-    <td width="40%" align="center" valign="middle">
-      <img src="./assets/evangelion.gif" width="160" alt="Evangelion">
-    </td>
-  </tr>
-</table>
+<br>
 
 <p align="center">
   <img src="./profile-3d-contrib/profile-night-green.svg" width="100%" alt="3D Contribution Graph">
 </p>
 
-<p align="center">
-  <img src="./assets/catkitty.gif" width="70" alt="cat kitty bottom left">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="./assets/catkitty.gif" width="70" alt="cat kitty bottom right">
-</p>
-
 ---
 
-## 🚀 Featured Projects
+## 🗂️ Featured Projects
 
 <table>
   <tr>
     <td width="33%" valign="top">
-      <h3>ExpenseFlow</h3>
-      <p>Android first personal expense tracker built with Flutter, Drift/SQLite, Riverpod and GoRouter.</p>
+      <h3>📱 ExpenseFlow</h3>
+      <p>Android-first personal expense tracker built with Flutter, Drift/SQLite, Riverpod and GoRouter.</p>
     </td>
     <td width="33%" valign="top">
-      <h3>JyotishAI</h3>
-      <p>AI powered Vedic astrology platform with modular backend, RAG pipeline, vector search and provider agnostic AI architecture.</p>
+      <h3>🔮 JyotishAI</h3>
+      <p>AI-powered Vedic astrology platform with a modular backend, RAG pipeline, vector search and provider-agnostic AI architecture.</p>
     </td>
     <td width="33%" valign="top">
-      <h3>AI Voice Receptionist</h3>
-      <p>Intelligent voice based reception system using LLMs and speech pipelines to handle inbound calls and queries autonomously.</p>
+      <h3>🎙️ AI Voice Receptionist</h3>
+      <p>Intelligent voice-based reception system using LLMs and speech pipelines to handle inbound calls and queries autonomously.</p>
     </td>
   </tr>
   <tr>
     <td width="33%" valign="top">
-      <h3>SorryNotSorry</h3>
-      <p>A social platform concept built around unfiltered authentic expression no virtue signalling just honesty.</p>
+      <h3>💬 SorryNotSorry</h3>
+      <p>A social platform concept built around unfiltered authentic expression — no virtue signalling, just honesty.</p>
     </td>
     <td width="33%" valign="top">
-      <h3>KidsHub</h3>
-      <p>A safe, curated digital learning space for children interactive content, parental controls and progress tracking.</p>
+      <h3>👶 KidsHub</h3>
+      <p>A safe, curated digital learning space for children — interactive content, parental controls, and progress tracking.</p>
     </td>
     <td width="33%" valign="top">
     </td>
