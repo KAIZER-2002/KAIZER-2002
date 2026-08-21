@@ -7,8 +7,7 @@
 </p>
 
 <p align="center">
-  <b>SOFTWARE DEVELOPER</b><br>
-  <i>Building practical, production-ready applications across mobile, backend, and web.</i>
+  <img src="./assets/developer-intro.svg" width="800" alt="Software Developer Intro">
 </p>
 
 <p align="center">
@@ -51,20 +50,32 @@
 
 ---
 
-<h2 align="center">
-  <img src="./assets/catkitty.gif" width="45">
-  <img src="./assets/catkitty.gif" width="65">
-  &nbsp; 📊 GitHub Analytics &nbsp;
-  <img src="./assets/catkitty.gif" width="65">
-  <img src="./assets/catkitty.gif" width="45">
-</h2>
-
-<div align="center">
-  <img src="./assets/evangelion.gif" width="160" align="right" alt="Evangelion">
-  <img src="https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats"><br>
-  <img src="https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false" alt="Streak Stats"><br>
-  <img src="https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
-</div>
+<table width="100%">
+  <tr>
+    <td width="75%" valign="top">
+      <h2>
+        <img src="./assets/catkitty.gif" width="45" valign="middle">
+        <img src="./assets/catkitty.gif" width="65" valign="middle">
+        &nbsp; 📊 GitHub Analytics &nbsp;
+        <img src="./assets/catkitty.gif" width="65" valign="middle">
+        <img src="./assets/catkitty.gif" width="45" valign="middle">
+      </h2>
+      <img src="https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats">
+      <br><br>
+      <img src="https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false" alt="Streak Stats">
+      <br><br>
+      <img src="https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
+    </td>
+    <td width="25%" valign="top" align="center">
+      <br><br>
+      <img src="./assets/evangelion.gif" width="140" alt="Evangelion">
+      <br><br><br>
+      <img src="./assets/8BitPixel.gif" width="140" alt="8BitPixel">
+      <br><br><br>
+      <img src="./assets/PAC-MAN.gif" width="140" alt="PAC-MAN">
+    </td>
+  </tr>
+</table>
 
 <br>
 

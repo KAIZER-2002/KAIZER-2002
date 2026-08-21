@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 120" width="800" height="120">
+  <defs>
+    <!-- Purple/Blue gradient for the glowing text -->
+    <linearGradient id="cyberGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="50%" stop-color="#58a6ff" />
+      <stop offset="100%" stop-color="#3fb950" />
+    </linearGradient>
+
+    <!-- Scanline effect gradient -->
+    <linearGradient id="scanline" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(124, 58, 237, 0)" />
+      <stop offset="50%" stop-color="rgba(124, 58, 237, 0.5)" />
+      <stop offset="100%" stop-color="rgba(124, 58, 237, 0)" />
+    </linearGradient>
+
+    <style>
+      .terminal-text {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        fill: #7c3aed;
+        opacity: 0;
+        animation: glitch-reveal 6s infinite;
+      }
+
+      .subtitle-text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        fill: #8b949e;
+        opacity: 0;
+        animation: fade-in-up 6s infinite;
+      }
+
+      .accent {
+        fill: #a78bfa;
+        font-weight: 600;
+      }
+
+      .cursor {
+        fill: #58a6ff;
+        opacity: 0;
+        animation: blink 6s infinite;
+      }
+
+      .scan-rect {
+        fill: url(#scanline);
+        opacity: 0.5;
+        animation: scan 6s infinite;
+      }
+
+      @keyframes glitch-reveal {
+        0% { opacity: 0; transform: translateX(-10px); }
+        10% { opacity: 0; }
+        12% { opacity: 1; transform: translateX(2px); }
+        14% { transform: translateX(-2px); }
+        16% { transform: translateX(0); }
+        85% { opacity: 1; transform: translateX(0); }
+        90% { opacity: 0; transform: translateX(10px); }
+        100% { opacity: 0; }
+      }
+
+      @keyframes fade-in-up {
+        0% { opacity: 0; transform: translateY(10px); }
+        25% { opacity: 0; transform: translateY(10px); }
+        35% { opacity: 1; transform: translateY(0); }
+        85% { opacity: 1; transform: translateY(0); }
+        90% { opacity: 0; transform: translateY(-10px); }
+        100% { opacity: 0; }
+      }
+
+      @keyframes blink {
+        0%, 15% { opacity: 0; }
+        16%, 20%, 26%, 30%, 36%, 40%, 46%, 50%, 56%, 60%, 66%, 70%, 76%, 80% { opacity: 1; }
+        21%, 25%, 31%, 35%, 41%, 45%, 51%, 55%, 61%, 65%, 71%, 75%, 81%, 85% { opacity: 0; }
+        86%, 100% { opacity: 0; }
+      }
+
+      @keyframes scan {
+        0% { transform: translateY(-20px); }
+        40% { transform: translateY(140px); }
+        100% { transform: translateY(140px); }
+      }
+    </style>
+  </defs>
+
+  <!-- Background (Transparent for dark mode integration) -->
+  <rect width="100%" height="100%" fill="transparent" />
+
+  <!-- The Scanline -->
+  <rect class="scan-rect" width="100%" height="10px" x="0" y="0" />
+
+  <!-- Main Title -->
+  <text x="400" y="45" text-anchor="middle" class="terminal-text">
+    > SOFTWARE DEVELOPER<tspan class="cursor">_</tspan>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="400" y="80" text-anchor="middle" class="subtitle-text">
+    Building practical, <tspan class="accent">production-ready</tspan> applications across <tspan class="accent">mobile, backend,</tspan> and <tspan class="accent">web.</tspan>
+  </text>
+
+</svg>
