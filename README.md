@@ -59,9 +59,9 @@
 <h2 align="center">
   <img src="./assets/catkitty.gif" width="45" valign="middle">
   <img src="./assets/catkitty.gif" width="65" valign="middle">
-  &nbsp;  GitHub Analytics &nbsp;
-  <img src="./assets/catkitty.gif" width="65" valign="middle">
-  <img src="./assets/catkitty.gif" width="45" valign="middle">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   GitHub Analytics &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="./assets/catkitty-flipped.gif" width="65" valign="middle">
+  <img src="./assets/catkitty-flipped.gif" width="45" valign="middle">
 </h2>
 
 <p>
