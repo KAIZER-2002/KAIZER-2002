@@ -64,20 +64,20 @@
   <img src="./assets/catkitty-flipped.gif" width="45" valign="middle">
 </h2>
 
-<p>
-  <img src="./assets/evangelion.gif" width="140" align="right" alt="Evangelion">
-  <img src="https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats">
-</p>
-
-<p>
-  <img src="./assets/8BitPixel.gif" width="140" align="right" alt="8BitPixel">
-  <img src="https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false" alt="Streak Stats">
-</p>
-
-<p>
-  <img src="./assets/PAC-MAN.gif" width="140" align="right" alt="PAC-MAN">
-  <img src="https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
-</p>
+<table>
+  <tr>
+    <td valign="top">
+      <img src="https://github-readme-stats.shion.dev/api?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true" alt="GitHub Stats"><br><br>
+      <img src="https://streak-stats.demolab.com/?user=KAIZER-2002&theme=vision-friendly-dark&hide_border=false" alt="Streak Stats"><br><br>
+      <img src="https://github-readme-stats.shion.dev/api/top-langs/?username=KAIZER-2002&theme=vision-friendly-dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="Top Languages">
+    </td>
+    <td valign="top" width="140">
+      <img src="./assets/evangelion.gif" width="140" alt="Evangelion"><br><br>
+      <img src="./assets/8BitPixel.gif" width="140" alt="8BitPixel"><br><br>
+      <img src="./assets/PAC-MAN.gif" width="140" alt="PAC-MAN">
+    </td>
+  </tr>
+</table>
 
 <br>
 
