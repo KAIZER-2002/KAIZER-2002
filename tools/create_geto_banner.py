@@ -1,15 +1,19 @@
 import os
 import math
 import numpy as np
+import cv2
 from PIL import Image, ImageSequence
 
-# Settings
+# ---------------------------------------------------------
+# GENERATION SETTINGS
+# ---------------------------------------------------------
 WIDTH = 1200
 HEIGHT = 300
 TRANSITION_FRAMES = 18
-HOLD_FRAMES = 10
-FINAL_HOLD_FRAMES = 18
+HOLD_FRAMES = 12
+FINAL_HOLD_FRAMES = 24
 FPS = 15
+BG_COLOR = (13, 17, 23) # #0d1117 README background
 
 assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')
 gif_paths = [
@@ -19,31 +23,75 @@ gif_paths = [
     os.path.join(assets_dir, 'geto-suguru-yo.gif')
 ]
 
-def load_and_resize_gif(path, num_target_frames):
-    print(f"Loading {path}...")
+# (cx, cy, rx, ry) - Normalized coordinates inside the original GIF dimensions
+# Protects dark character features (hair/clothes/face) from luminance extraction
+CORES = [
+    (0.8, 0.5, 0.25, 0.5), # Image 0: Geto (character on right)
+    (0.4, 0.5, 0.3, 0.5),  # Image 1: JJK (character center-left)
+    (0.5, 0.5, 0.35, 0.5), # Image 2: Geto Suguru (character center)
+    (0.5, 0.5, 0.4, 0.5)   # Image 3: Geto Suguru Yo (character center)
+]
+
+def smoothstep(edge0, edge1, x):
+    x = np.clip((x - edge0) / (edge1 - edge0), 0.0, 1.0)
+    return x * x * (3.0 - 2.0 * x)
+
+def load_and_extract_alpha(path, core_params, num_target_frames):
+    print(f"Loading and extracting alpha: {path}...")
     gif = Image.open(path)
     frames = []
+    
     for frame in ImageSequence.Iterator(gif):
         frame = frame.convert('RGB')
-        # Crop to target aspect ratio
-        w, h = frame.size
-        target_aspect = WIDTH / HEIGHT
-        aspect = w / h
-        if aspect > target_aspect:
-            # Crop width
-            new_w = int(h * target_aspect)
-            left = (w - new_w) // 2
-            frame = frame.crop((left, 0, left + new_w, h))
-        else:
-            # Crop height
-            new_h = int(w / target_aspect)
-            top = (h - new_h) // 2
-            frame = frame.crop((0, top, w, top + new_h))
+        img = np.array(frame)
+        h, w = img.shape[:2]
+        
+        # 1. Content-Aware Crop for Geto.gif (Remove massive black padding)
+        non_black = np.any(img > 15, axis=-1)
+        y_idx, x_idx = np.where(non_black)
+        if len(y_idx) > 0:
+            ymin, ymax = y_idx.min(), y_idx.max()
+            xmin, xmax = x_idx.min(), x_idx.max()
+            # If the crop is significantly smaller, apply it (Geto.gif)
+            if (xmax - xmin) < w * 0.9:
+                margin = 5
+                ymin = max(0, ymin - margin); ymax = min(h-1, ymax + margin)
+                xmin = max(0, xmin - margin); xmax = min(w-1, xmax + margin)
+                img = img[ymin:ymax+1, xmin:xmax+1]
+                h, w = img.shape[:2]
+        
+        # 2. Extract Luminance Alpha
+        L = 0.299 * img[:,:,0] + 0.587 * img[:,:,1] + 0.114 * img[:,:,2]
+        lum_alpha = smoothstep(15, 60, L)
+        
+        # 3. Apply Core Protection
+        y, x = np.ogrid[:h, :w]
+        cx, cy, rx, ry = core_params
+        cx *= w; cy *= h; rx *= w; ry *= h
+        core = 1.0 - ((x - cx)/rx)**4 - ((y - cy)/ry)**4
+        core = np.clip(core, 0, 1)
+        
+        base_alpha = np.maximum(lum_alpha, core)
+        base_alpha = cv2.GaussianBlur(base_alpha, (3, 3), 0)
+        
+        # 4. Scale to Canvas (Contain)
+        scale = min(WIDTH / w, HEIGHT / h)
+        new_w, new_h = int(w * scale), int(h * scale)
+        
+        out_rgba = np.zeros((h, w, 4), dtype=np.uint8)
+        out_rgba[:,:,:3] = img
+        out_rgba[:,:,3] = (base_alpha * 255).astype(np.uint8)
+        
+        fg_resized = Image.fromarray(out_rgba).resize((new_w, new_h), Image.Resampling.LANCZOS)
+        
+        # Place on 1200x300 transparent canvas
+        canvas = Image.new('RGBA', (WIDTH, HEIGHT), (0, 0, 0, 0))
+        x_off = (WIDTH - new_w) // 2
+        y_off = (HEIGHT - new_h) // 2
+        canvas.paste(fg_resized, (x_off, y_off), fg_resized)
+        
+        frames.append(np.array(canvas).astype(float) / 255.0)
 
-        frame = frame.resize((WIDTH, HEIGHT), Image.Resampling.LANCZOS)
-        frames.append(np.array(frame))
-
-    # Loop or trim to match target frames
     out_frames = []
     for i in range(num_target_frames):
         out_frames.append(frames[i % len(frames)])
@@ -53,76 +101,78 @@ def create_transition():
     total_frames = HOLD_FRAMES * 3 + FINAL_HOLD_FRAMES + TRANSITION_FRAMES * 3
     print(f"Total frames to generate: {total_frames}")
 
-    # Load all 4 GIFs extended to total_frames
-    gifs_frames = [load_and_resize_gif(path, total_frames) for path in gif_paths]
-
+    gifs_frames = [load_and_extract_alpha(gif_paths[i], CORES[i], total_frames) for i in range(4)]
     final_frames = []
 
-    # Generate a displacement map for the wave
+    # Organic Liquid Wave Setup
     y_coords = np.arange(HEIGHT)
     x_coords = np.arange(WIDTH)
     xx, yy = np.meshgrid(x_coords, y_coords)
 
-    # complex wave pattern
-    wave_offset = 60 * np.sin(yy / 25.0) + 40 * np.sin(yy / 55.0 + 1.5) + 25 * np.sin(yy / 15.0 + yy / 60.0)
+    # Multi-frequency organic wave
+    wave_y1 = np.sin(yy / 30.0)
+    wave_y2 = np.sin(yy / 70.0 + 1.5)
+    wave_y3 = np.sin(yy / 15.0 + yy / 80.0)
+    wave_x1 = np.sin(xx / 60.0)
+    
+    amplitude = 120.0
+    wave_offset = amplitude * wave_y1 + (amplitude * 0.5) * wave_y2 + (amplitude * 0.3) * wave_y3
+    wave_offset += 60.0 * wave_x1 * wave_y2
+
+    base_T = xx - wave_offset
+
+    def blend_frames(f1_rgba, f2_rgba, progress):
+        # f1 and f2 are [H, W, 4] floats in 0..1
+        boundary = progress * (WIDTH + 600) - 300
+        
+        # Wave mask: 1.0 (left, new frame), 0.0 (right, old frame)
+        # Using a very soft feather (150px) for a liquid blend
+        wave_mask = np.clip((boundary - base_T) / 150.0 + 0.5, 0, 1)
+        wave_mask = wave_mask[:, :, np.newaxis]
+        
+        # Multiply source alphas by the wave
+        a1 = f1_rgba[..., 3:] * (1.0 - wave_mask)
+        a2 = f2_rgba[..., 3:] * wave_mask
+        
+        # Over operator (A over B) onto background
+        bg_rgb = np.array(BG_COLOR, dtype=float).reshape(1, 1, 3) / 255.0
+        
+        # f1 over BG
+        comp_f1_rgb = f1_rgba[..., :3] * a1 + bg_rgb * (1.0 - a1)
+        # f2 over (f1 over BG)
+        comp_final_rgb = f2_rgba[..., :3] * a2 + comp_f1_rgb * (1.0 - a2)
+        
+        return np.clip(comp_final_rgb * 255.0, 0, 255).astype(np.uint8)
 
     print("Generating frames...")
     for frame_idx in range(total_frames):
-        # Determine which transition we are in
         if frame_idx < HOLD_FRAMES:
-            # Hold image 0
-            img = gifs_frames[0][frame_idx]
+            # Still frame 0
+            img = blend_frames(gifs_frames[0][frame_idx], gifs_frames[0][frame_idx], 0.0)
+            
         elif frame_idx < HOLD_FRAMES + TRANSITION_FRAMES:
-            # Transition 0 -> 1
-            progress = (frame_idx - HOLD_FRAMES) / TRANSITION_FRAMES
-            img1 = gifs_frames[0][frame_idx]
-            img2 = gifs_frames[1][frame_idx]
-
-            boundary = progress * (WIDTH + 250) - 125
-            dist = boundary + wave_offset - xx
-            mask = np.clip(dist / 30.0 + 0.5, 0, 1) # smooth blend
-            mask = mask[:, :, np.newaxis]
-
-            img = img1 * (1 - mask) + img2 * mask
-            img = img.astype(np.uint8)
-
+            progress = (frame_idx - HOLD_FRAMES) / (TRANSITION_FRAMES - 1)
+            img = blend_frames(gifs_frames[0][frame_idx], gifs_frames[1][frame_idx], progress)
+            
         elif frame_idx < HOLD_FRAMES * 2 + TRANSITION_FRAMES:
-            # Hold image 1
-            img = gifs_frames[1][frame_idx]
+            # Still frame 1
+            img = blend_frames(gifs_frames[1][frame_idx], gifs_frames[1][frame_idx], 0.0)
+            
         elif frame_idx < HOLD_FRAMES * 2 + TRANSITION_FRAMES * 2:
-            # Transition 1 -> 2
-            progress = (frame_idx - (HOLD_FRAMES * 2 + TRANSITION_FRAMES)) / TRANSITION_FRAMES
-            img1 = gifs_frames[1][frame_idx]
-            img2 = gifs_frames[2][frame_idx]
-
-            boundary = progress * (WIDTH + 250) - 125
-            dist = boundary + wave_offset - xx
-            mask = np.clip(dist / 30.0 + 0.5, 0, 1)
-            mask = mask[:, :, np.newaxis]
-
-            img = img1 * (1 - mask) + img2 * mask
-            img = img.astype(np.uint8)
-
+            progress = (frame_idx - (HOLD_FRAMES * 2 + TRANSITION_FRAMES)) / (TRANSITION_FRAMES - 1)
+            img = blend_frames(gifs_frames[1][frame_idx], gifs_frames[2][frame_idx], progress)
+            
         elif frame_idx < HOLD_FRAMES * 3 + TRANSITION_FRAMES * 2:
-            # Hold image 2
-            img = gifs_frames[2][frame_idx]
+            # Still frame 2
+            img = blend_frames(gifs_frames[2][frame_idx], gifs_frames[2][frame_idx], 0.0)
+            
         elif frame_idx < HOLD_FRAMES * 3 + TRANSITION_FRAMES * 3:
-            # Transition 2 -> 3
-            progress = (frame_idx - (HOLD_FRAMES * 3 + TRANSITION_FRAMES * 2)) / TRANSITION_FRAMES
-            img1 = gifs_frames[2][frame_idx]
-            img2 = gifs_frames[3][frame_idx]
-
-            boundary = progress * (WIDTH + 250) - 125
-            dist = boundary + wave_offset - xx
-            mask = np.clip(dist / 30.0 + 0.5, 0, 1)
-            mask = mask[:, :, np.newaxis]
-
-            img = img1 * (1 - mask) + img2 * mask
-            img = img.astype(np.uint8)
-
+            progress = (frame_idx - (HOLD_FRAMES * 3 + TRANSITION_FRAMES * 2)) / (TRANSITION_FRAMES - 1)
+            img = blend_frames(gifs_frames[2][frame_idx], gifs_frames[3][frame_idx], progress)
+            
         else:
-            # Hold image 3
-            img = gifs_frames[3][frame_idx]
+            # Still frame 3
+            img = blend_frames(gifs_frames[3][frame_idx], gifs_frames[3][frame_idx], 0.0)
 
         final_frames.append(Image.fromarray(img))
 
