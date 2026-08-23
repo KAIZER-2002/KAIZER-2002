@@ -1,8 +1,8 @@
 import os
-import math
+import sys
 import numpy as np
 import cv2
-from PIL import Image, ImageSequence
+from PIL import Image, ImageSequence, UnidentifiedImageError
 
 # ---------------------------------------------------------
 # GENERATION SETTINGS
@@ -32,18 +32,34 @@ CORES = [
     (0.5, 0.5, 0.4, 0.5)   # Image 3: Geto Suguru Yo (character center)
 ]
 
+if len(CORES) != len(gif_paths):
+    raise ValueError(
+        f"CORES has {len(CORES)} entries but gif_paths has {len(gif_paths)}; "
+        "every source GIF needs matching core parameters"
+    )
+
 def smoothstep(edge0, edge1, x):
     x = np.clip((x - edge0) / (edge1 - edge0), 0.0, 1.0)
     return x * x * (3.0 - 2.0 * x)
 
 def load_and_extract_alpha(path, core_params, num_target_frames):
     print(f"Loading and extracting alpha: {path}...")
-    gif = Image.open(path)
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"Source GIF not found: {path}")
+    try:
+        gif = Image.open(path)
+    except (UnidentifiedImageError, OSError) as exc:
+        raise RuntimeError(f"Could not open source GIF {path}: {exc}") from exc
     frames = []
-    
-    for frame in ImageSequence.Iterator(gif):
-        frame = frame.convert('RGB')
-        img = np.array(frame)
+
+    for frame_number, frame in enumerate(ImageSequence.Iterator(gif)):
+        try:
+            frame = frame.convert('RGB')
+            img = np.array(frame)
+        except OSError as exc:
+            raise RuntimeError(
+                f"Failed to decode frame {frame_number} of {path}: {exc}"
+            ) from exc
         h, w = img.shape[:2]
         
         # 1. Content-Aware Crop for Geto.gif (Remove massive black padding)
@@ -92,6 +108,9 @@ def load_and_extract_alpha(path, core_params, num_target_frames):
         
         frames.append(np.array(canvas).astype(float) / 255.0)
 
+    if not frames:
+        raise RuntimeError(f"No frames could be decoded from {path}")
+
     out_frames = []
     for i in range(num_target_frames):
         out_frames.append(frames[i % len(frames)])
@@ -101,7 +120,10 @@ def create_transition():
     total_frames = HOLD_FRAMES * 3 + FINAL_HOLD_FRAMES + TRANSITION_FRAMES * 3
     print(f"Total frames to generate: {total_frames}")
 
-    gifs_frames = [load_and_extract_alpha(gif_paths[i], CORES[i], total_frames) for i in range(4)]
+    gifs_frames = [
+        load_and_extract_alpha(path, core, total_frames)
+        for path, core in zip(gif_paths, CORES)
+    ]
     final_frames = []
 
     # Organic Liquid Wave Setup
@@ -178,17 +200,24 @@ def create_transition():
 
     out_path = os.path.join(assets_dir, 'geto-transition.webp')
     print(f"Saving to {out_path}...")
-    final_frames[0].save(
-        out_path,
-        format='WEBP',
-        save_all=True,
-        append_images=final_frames[1:],
-        duration=1000//FPS,
-        loop=0,
-        quality=80,
-        method=4
-    )
+    try:
+        final_frames[0].save(
+            out_path,
+            format='WEBP',
+            save_all=True,
+            append_images=final_frames[1:],
+            duration=1000//FPS,
+            loop=0,
+            quality=80,
+            method=4
+        )
+    except OSError as exc:
+        raise RuntimeError(f"Failed to write banner to {out_path}: {exc}") from exc
     print(f"Saved {out_path} with {len(final_frames)} frames.")
 
 if __name__ == '__main__':
-    create_transition()
+    try:
+        create_transition()
+    except (RuntimeError, OSError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        sys.exit(1)
