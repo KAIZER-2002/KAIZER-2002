@@ -16,20 +16,15 @@ FPS = 15
 BG_COLOR = (13, 17, 23) # #0d1117 README background
 
 assets_dir = os.path.join(os.path.dirname(__file__), '..', 'assets')
-gif_paths = [
-    os.path.join(assets_dir, 'Geto.gif'),
-    os.path.join(assets_dir, 'jujutsu-kaisen-jjk.gif'),
-    os.path.join(assets_dir, 'geto-suguru.gif'),
-    os.path.join(assets_dir, 'geto-suguru-yo.gif')
-]
 
-# (cx, cy, rx, ry) - Normalized coordinates inside the original GIF dimensions
-# Protects dark character features (hair/clothes/face) from luminance extraction
-CORES = [
-    (0.8, 0.5, 0.25, 0.5), # Image 0: Geto (character on right)
-    (0.4, 0.5, 0.3, 0.5),  # Image 1: JJK (character center-left)
-    (0.5, 0.5, 0.35, 0.5), # Image 2: Geto Suguru (character center)
-    (0.5, 0.5, 0.4, 0.5)   # Image 3: Geto Suguru Yo (character center)
+# Each source is a GIF plus its core (cx, cy, rx, ry): normalized coordinates
+# inside the original GIF dimensions that protect dark character features
+# (hair/clothes/face) from luminance extraction.
+SOURCES = [
+    ('Geto.gif', (0.8, 0.5, 0.25, 0.5)),            # character on right
+    ('jujutsu-kaisen-jjk.gif', (0.4, 0.5, 0.3, 0.5)), # character center-left
+    ('geto-suguru.gif', (0.5, 0.5, 0.35, 0.5)),     # character center
+    ('geto-suguru-yo.gif', (0.5, 0.5, 0.4, 0.5))    # character center
 ]
 
 def smoothstep(edge0, edge1, x):
@@ -97,11 +92,24 @@ def load_and_extract_alpha(path, core_params, num_target_frames):
         out_frames.append(frames[i % len(frames)])
     return out_frames
 
+def build_segments(num_sources):
+    """Hold/transition schedule as (from_index, to_index, length) segments."""
+    segments = []
+    for i in range(num_sources - 1):
+        segments.append((i, i, HOLD_FRAMES))
+        segments.append((i, i + 1, TRANSITION_FRAMES))
+    segments.append((num_sources - 1, num_sources - 1, FINAL_HOLD_FRAMES))
+    return segments
+
 def create_transition():
-    total_frames = HOLD_FRAMES * 3 + FINAL_HOLD_FRAMES + TRANSITION_FRAMES * 3
+    segments = build_segments(len(SOURCES))
+    total_frames = sum(length for _, _, length in segments)
     print(f"Total frames to generate: {total_frames}")
 
-    gifs_frames = [load_and_extract_alpha(gif_paths[i], CORES[i], total_frames) for i in range(4)]
+    gifs_frames = [
+        load_and_extract_alpha(os.path.join(assets_dir, name), core, total_frames)
+        for name, core in SOURCES
+    ]
     final_frames = []
 
     # Organic Liquid Wave Setup
@@ -145,36 +153,13 @@ def create_transition():
         return np.clip(comp_final_rgb * 255.0, 0, 255).astype(np.uint8)
 
     print("Generating frames...")
-    for frame_idx in range(total_frames):
-        if frame_idx < HOLD_FRAMES:
-            # Still frame 0
-            img = blend_frames(gifs_frames[0][frame_idx], gifs_frames[0][frame_idx], 0.0)
-            
-        elif frame_idx < HOLD_FRAMES + TRANSITION_FRAMES:
-            progress = (frame_idx - HOLD_FRAMES) / (TRANSITION_FRAMES - 1)
-            img = blend_frames(gifs_frames[0][frame_idx], gifs_frames[1][frame_idx], progress)
-            
-        elif frame_idx < HOLD_FRAMES * 2 + TRANSITION_FRAMES:
-            # Still frame 1
-            img = blend_frames(gifs_frames[1][frame_idx], gifs_frames[1][frame_idx], 0.0)
-            
-        elif frame_idx < HOLD_FRAMES * 2 + TRANSITION_FRAMES * 2:
-            progress = (frame_idx - (HOLD_FRAMES * 2 + TRANSITION_FRAMES)) / (TRANSITION_FRAMES - 1)
-            img = blend_frames(gifs_frames[1][frame_idx], gifs_frames[2][frame_idx], progress)
-            
-        elif frame_idx < HOLD_FRAMES * 3 + TRANSITION_FRAMES * 2:
-            # Still frame 2
-            img = blend_frames(gifs_frames[2][frame_idx], gifs_frames[2][frame_idx], 0.0)
-            
-        elif frame_idx < HOLD_FRAMES * 3 + TRANSITION_FRAMES * 3:
-            progress = (frame_idx - (HOLD_FRAMES * 3 + TRANSITION_FRAMES * 2)) / (TRANSITION_FRAMES - 1)
-            img = blend_frames(gifs_frames[2][frame_idx], gifs_frames[3][frame_idx], progress)
-            
-        else:
-            # Still frame 3
-            img = blend_frames(gifs_frames[3][frame_idx], gifs_frames[3][frame_idx], 0.0)
-
-        final_frames.append(Image.fromarray(img))
+    frame_idx = 0
+    for src, dst, length in segments:
+        for step in range(length):
+            progress = 0.0 if src == dst else step / (length - 1)
+            img = blend_frames(gifs_frames[src][frame_idx], gifs_frames[dst][frame_idx], progress)
+            final_frames.append(Image.fromarray(img))
+            frame_idx += 1
 
     out_path = os.path.join(assets_dir, 'geto-transition.webp')
     print(f"Saving to {out_path}...")
