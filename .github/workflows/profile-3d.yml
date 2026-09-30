@@ -7,27 +7,78 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
     name: generate-github-profile-3d-contrib
 
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: yoshi389111/github-profile-3d-contrib@v0.9.3
+      - uses: yoshi389111/github-profile-3d-contrib@9e3f937195cf840d364388973f73e3c4b3753586 # main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
           MAX_REPOS: 100
 
-      - name: Commit & Push
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: profile-3d-contrib
+          path: profile-3d-contrib
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: generate
+    runs-on: ubuntu-latest
+    name: publish-github-profile-3d-contrib
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: profile-3d-contrib
+          path: generated-profile-3d-contrib
+
+      - name: Commit and push generated profiles
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+
+          files=(
+            profile-green-animate.svg
+            profile-green.svg
+            profile-season-animate.svg
+            profile-season.svg
+            profile-south-season-animate.svg
+            profile-south-season.svg
+            profile-night-view.svg
+            profile-night-green.svg
+            profile-night-rainbow.svg
+            profile-gitblock.svg
+          )
+
+          for file in "${files[@]}"; do
+            source="generated-profile-3d-contrib/${file}"
+            test -f "${source}"
+            test ! -L "${source}"
+            cp -- "${source}" "profile-3d-contrib/${file}"
+          done
+
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add -A .
-          if git commit -m "chore: update 3D contribution graph"; then
-            git push
+          git add -- "${files[@]/#/profile-3d-contrib/}"
+
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update 3D contribution graph"
+            auth_header="$(printf 'x-access-token:%s' "${GH_TOKEN}" | base64 -w0)"
+            git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${auth_header}" \
+              push origin "HEAD:${GITHUB_REF_NAME}"
           fi
